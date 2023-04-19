@@ -1,0 +1,17 @@
+自第一个实现的浏览器开始计算，Fetch API 已经快要五岁了。这五年 Chrome 和 Firefox 刷了不少版本号，IE 也不知死了多少年，而它的继任者更是上演了一出名为《Edge: Become Chromium》的好剧。再加上 ES6+ 的普及，我们早已习惯了基于 Promise 和 async/await 的异步编程，所以估计不少同学也转而使用 Fetch API 作异步请求。陪伴了我们将近 20 年历史的 XMLHttpRequest 也被不少同学「打入冷宫」，毕竟谁让 Fetch API 那么好用呢？可怜的 XHR 只能独守空房终日以泪洗面，看着你和 Fetch API 嬉戏的样子，口中喃喃说着「是我，是我先，明明都是我先来的」——呃，不好意思扯歪了。
+
+Fetch API 不香吗？
+不不不，没有这个意思。相比较于 XMLHttpRequest 来说，fetch() 的写法简单又直观，只要在发起请求时将整个配置项传入就可以了。而且相较于 XHR 还提供了更多的控制参数，例如是否携带 Cookie、是否需要手动跳转等。此外 Fetch API 是基于 Promise 链式调用的，一定程度上可以避免一些回调地狱。举个例子，下面就是一个简单的 fetch 请求：
+
+fetch('https://example.org/foo', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+        'content-type': 'application/json'
+    },
+    credentials: 'include',
+    redirect: 'follow',
+    body: JSON.stringify({ foo: 'bar' })
+}).then(res => res.json()).then(...)
+如果你不喜欢 Promise 的链式调用的话，还可以用 async/await：
+
