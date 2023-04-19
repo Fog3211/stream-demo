@@ -8,7 +8,6 @@ export const requestOpenai = () => {
 
   return new Promise((resolve, reject) => {
     stream.on('open', () => {
-      console.log('111')
       resolve(new Response(stream as any));
     });
 
