@@ -1,35 +1,29 @@
 import express from 'express';
 import { createStream } from './stream';
-import fs from 'node:fs';
-import path from 'node:path';
+import { generateFileData } from './mock';
 
 const app = express();
 
-app.get('/stream', (req, res) => {
-  return createStream(res);
-});
-
-app.get('/file', (req, res) => {
-  const filePath = path.join(__dirname, './article.txt');
-  const content = fs.readFileSync(filePath, 'utf-8');
-
+app.get('/file-stream', (req, res) => {
   res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
+    'Content-Type': 'text/event-stream;charset=utf-8',
+    'Cache-Control': 'no-cache, no-transform',
     'Connection': 'keep-alive'
   });
 
-  let i = 0;
-  function type() {
-    if (i < content.length) {
-      res.write(`${content[i++]}`);
-      setTimeout(type, 30); // 设置30ms的延迟
-    } else {
-      res.end();
-    }
-  }
+  const eventEmitter = generateFileData();
 
-  type();
+  eventEmitter.on('data', (data) => {
+    res.write(data);
+  });
+
+  eventEmitter.on('end', () => {
+    res.end();
+  });
+});
+
+app.get('/chat-stream', (req, res) => {
+  return createStream(res);
 });
 
 const port = 3006;

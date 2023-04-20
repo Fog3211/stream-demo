@@ -1,18 +1,23 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { Response } from 'node-fetch';
+import EventEmitter from 'events';
 
-export const requestOpenai = () => {
+export const generateFileData = () => {
   const filePath = path.join(__dirname, './article.txt');
-  const stream = fs.createReadStream(filePath, { encoding: 'utf-8' });
+  const content = fs.readFileSync(filePath, 'utf-8');
+  const emitter = new EventEmitter();
+  let i = 0;
 
-  return new Promise((resolve, reject) => {
-    stream.on('open', () => {
-      resolve(new Response(stream as any));
-    });
+  function type() {
+    if (i < content.length) {
+      emitter.emit('data', `${content[i++]}`);
+      setTimeout(type, 20);
+    } else {
+      emitter.emit('end');
+    }
+  }
 
-    stream.on('error', (err) => {
-      reject(err);
-    });
-  });
+  process.nextTick(type);
+
+  return emitter;
 };

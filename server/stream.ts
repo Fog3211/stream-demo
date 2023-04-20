@@ -3,14 +3,15 @@ import type {
   ReconnectInterval,
 } from 'eventsource-parser'
 import { createParser } from 'eventsource-parser'
-import { requestOpenai } from './mock'
+import { generateFileData } from './mock'
 import { Response } from 'express'
+import fetch from 'node-fetch'
 
 export async function createStream(res: Response) {
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
 
-  const openaiRes = await requestOpenai()
+  const openaiRes = await fetch('http://0.0.0.0:3006/file')
 
   // 设置响应头
   res.setHeader('Content-Type', 'text/event-stream; charset=utf-8')
@@ -40,8 +41,8 @@ export async function createStream(res: Response) {
         }
       }
       const parser = createParser(onParse)
-      for await (const chunk of openaiRes as any){
-        console.log('aaa',chunk)
+      for await (const chunk of openaiRes as any) {
+        console.log('aaa', chunk)
         parser.feed(decoder.decode(chunk, { stream: true }))
       }
     },
