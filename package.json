@@ -5,10 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "esno watch ./server/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prod": "node ./dist/index.mjs",
+    "copy": "cp ./server/article.txt ./dist/article.txt",
+    "build": "tsup ./server/index.ts --format esm && pnpm copy",
+    "clean": "rimraf dist",
+    "prebuild": "pnpm clean"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "keywords": [],
   "author": "Fog3211",
@@ -22,6 +26,8 @@
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/node": "^18.15.11",
-    "esno": "^0.16.3"
+    "esno": "^0.16.3",
+    "rimraf": "^5.0.0",
+    "tsup": "^6.7.0"
   }
 }
